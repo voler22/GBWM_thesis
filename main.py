@@ -127,7 +127,7 @@ main(1,1.2,2,1,100000,w_array,portfolio_means,portfolio_stds,probs_array)
 paths = OOS(1,1.2,2,1,100000,w_array,portfolio_means,portfolio_stds,probs_array)
 
 
-###########################
+###########  Plots  ################
 a1 = []
 a2 = []
 a0 = []
