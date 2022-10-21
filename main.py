@@ -15,7 +15,7 @@ import env # imports the grid and transition probabilities functions
 from sampleWidx import sampleWidx
 from NeuralNet import NeuralNet
 import reinforce_algo
-from ANNtraining import no_batch_train, train_one_batch, train_model
+from ANNTraining import no_batch_train, train_one_batch, train_model
 from OOSTesting import OOS
 
 portfolio_means = np.array([0.15, 0.10, 0.05])
