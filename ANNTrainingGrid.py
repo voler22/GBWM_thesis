@@ -17,7 +17,7 @@ from NeuralNet import NeuralNet
 import reinforce_algo
 
 # without batches (not really needed)
-def no_batch_train(initial_value, goal, time, increments, nepochs, value_grid, means_grid, stds_grid, probs_grid, Model, opt):
+def no_batch_train_grid(initial_value, goal, time, increments, nepochs, value_grid, means_grid, stds_grid, probs_grid, Model, opt):
     n_success = 0
     neps = 0
     stopper = 0 # for the stopping condition
@@ -72,7 +72,7 @@ def no_batch_train(initial_value, goal, time, increments, nepochs, value_grid, m
 
 
 # with batches
-def train_one_batch(batch_size, Model, optimizer, T, increments, value_grid, initial_value, goal, probs_grid,
+def train_one_batch_grid(batch_size, Model, optimizer, T, increments, value_grid, initial_value, goal, probs_grid,
                     means_grid, stds_grid):
     t_sdize = np.linspace(0, T - 1, (T * increments))
     t_mu, t_std = t_sdize.mean(), t_sdize.std()
@@ -115,7 +115,7 @@ def train_one_batch(batch_size, Model, optimizer, T, increments, value_grid, ini
     return n_success
 
 
-def train_model(nepochs, batch_size, Model, optimizer, T, increments, value_grid, initial_value, goal,
+def train_model_grid(nepochs, batch_size, Model, optimizer, T, increments, value_grid, initial_value, goal,
                 probs_grid, means_grid, stds_grid):
     stopper = 0
     for i in range(nepochs):

@@ -16,7 +16,7 @@ from sampleWidx import sampleWidx
 from NeuralNet import NeuralNet
 import reinforce_algo
 
-def OOS(initial_value, goal, time, increments, Model, nepochs, value_grid, means_grid, stds_grid, probs_grid):
+def OOS_grid(initial_value, goal, time, increments, Model, nepochs, value_grid, means_grid, stds_grid, probs_grid):
     n_success = 0
     neps = 0
 
