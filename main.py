@@ -24,8 +24,8 @@ len_grid = 100
 min_value_grid, max_Value_grid = 0.02, 3
 h = 1 # time increments
 
-w_array = wealth_grid(len_grid, min_value_grid, max_Value_grid, h) # wealth grid
-probs_array = transition_probs(portfolio_means, portfolio_stds, w_array, h)
+w_array = env.wealth_grid(len_grid, min_value_grid, max_Value_grid, h) # wealth grid
+probs_array = env.transition_probs(portfolio_means, portfolio_stds, w_array, h)
 
 ######### To train model ###########
 
@@ -33,7 +33,7 @@ n_inputs = 2 # time and wealth
 n_weights = 8 # for neural network
 n_actions = len(portfolio_means)
 
-train_nepochs = 1000000
+train_nepochs = 1000
 
 # Checking device
 if torch.cuda.is_available():
@@ -45,23 +45,23 @@ else:
 model = NeuralNet(n_inputs, n_weights, n_actions).to(device = Device)
 
 optimizer = optim.Adam(model.parameters(), lr = 1e-2)
-nepochs = 1000
+nepochs = 1
 batch_size = 1000
-T = 10
+T = 2
 h = 1
 W0 = 1
-G = 2
+G = 1.2
 
 # OOS
-n_OOS_paths = 100000
+n_OOS_paths = 1000
 
 ##################################
 
 # training no batch
-no_batch_train(W0,G,T,h,train_nepochs,w_array,portfolio_means,portfolio_stds,probs_array)
+no_batch_train(W0,G,T,h,train_nepochs,w_array,portfolio_means,portfolio_stds,probs_array,model,optimizer)
 
 # training with batches
-train_model(nepochs, batch_size, model, optimizer, Device, T, h, w_array, W0, G, probs_array, portfolio_means, portfolio_stds)
+train_model(nepochs, batch_size, model, optimizer, T, h, w_array, W0, G, probs_array, portfolio_means, portfolio_stds)
 
 # Out-of-sample-testing
 OOS(W0, G, T, h, model, n_OOS_paths, w_array, portfolio_means, portfolio_stds, probs_array)

@@ -16,8 +16,8 @@ from sampleWidx import sampleWidx
 from NeuralNet import NeuralNet
 import reinforce_algo
 
-# without batches
-def no_batch_train(initial_value, goal, time, increments, nepochs, value_grid, means_grid, stds_grid, probs_grid):
+# without batches (not really needed)
+def no_batch_train(initial_value, goal, time, increments, nepochs, value_grid, means_grid, stds_grid, probs_grid, Model, opt):
     n_success = 0
     neps = 0
     stopper = 0 # for the stopping condition
@@ -36,7 +36,7 @@ def no_batch_train(initial_value, goal, time, increments, nepochs, value_grid, m
             t = (i - t_mu) / t_std # standardized time period
             wstzed = (value_grid[idx] - w_mu) / w_std # standardized wealth
             state = np.array([t, float(wstzed)])
-            action = reinforce_algo.action_select(state, model)
+            action = reinforce_algo.action_select(state, Model)
             idx = sampleWidx(idx, value_grid, action, means_grid, stds_grid, probs_grid)
             if i == (time - 1) and value_grid[idx] >= goal:
                 r = 1  # return if path is successful
@@ -51,12 +51,12 @@ def no_batch_train(initial_value, goal, time, increments, nepochs, value_grid, m
 
         policy_loss = []
 
-        for x1, x2 in zip(returns, model.saved_log_probs):
+        for x1, x2 in zip(returns, Model.saved_log_probs):
             policy_loss.append(-x1 * x2)
 
-        reinforce_algo.refine(policy_loss, optimizer)
+        reinforce_algo.refine(policy_loss, opt)
 
-        model.saved_log_probs = []
+        Model.saved_log_probs = []
 
         n_success = n_success + r
         neps = neps + 1
@@ -72,7 +72,7 @@ def no_batch_train(initial_value, goal, time, increments, nepochs, value_grid, m
 
 
 # with batches
-def train_one_batch(batch_size, Model, optimizer, device, T, increments, value_grid, initial_value, goal, probs_grid,
+def train_one_batch(batch_size, Model, optimizer, T, increments, value_grid, initial_value, goal, probs_grid,
                     means_grid, stds_grid):
     t_sdize = np.linspace(0, T - 1, (T * increments))
     t_mu, t_std = t_sdize.mean(), t_sdize.std()
@@ -91,7 +91,7 @@ def train_one_batch(batch_size, Model, optimizer, device, T, increments, value_g
             t = (i - t_mu) / t_std
             wszted = (value_grid[idx] - w_mu) / w_std
             state = np.array([t, float(wszted)])
-            action = action_select(state, Model)
+            action = reinforce_algo.action_select(state, Model)
             idx = sampleWidx(idx, value_grid, action, means_grid, stds_grid, probs_grid)
             if i == (T - 1) and value_grid[idx] >= goal:
                 r = 1  # return if path is successful
@@ -115,12 +115,12 @@ def train_one_batch(batch_size, Model, optimizer, device, T, increments, value_g
     return n_success
 
 
-def train_model(nepochs, batch_size, Model, optimizer, device, T, increments, value_grid, initial_value, goal,
+def train_model(nepochs, batch_size, Model, optimizer, T, increments, value_grid, initial_value, goal,
                 probs_grid, means_grid, stds_grid):
     stopper = 0
     for i in range(nepochs):
         # print(f"Epoch {i+1}")
-        n_success = train_one_batch(batch_size, Model, optimizer, device, T, increments, value_grid, initial_value,
+        n_success = train_one_batch(batch_size, Model, optimizer, T, increments, value_grid, initial_value,
                                     goal, probs_grid, means_grid, stds_grid)
 
         if (i + 1) % (nepochs / 100) == 0:

@@ -16,7 +16,7 @@ from sampleWidx import sampleWidx
 from NeuralNet import NeuralNet
 import reinforce_algo
 
-def OOS(initial_value, goal, time, increments, nepochs, value_grid, means_grid, stds_grid, probs_grid):
+def OOS(initial_value, goal, time, increments, Model, nepochs, value_grid, means_grid, stds_grid, probs_grid):
     n_success = 0
     neps = 0
 
@@ -33,7 +33,7 @@ def OOS(initial_value, goal, time, increments, nepochs, value_grid, means_grid, 
             t = (i - t_mu) / t_std
             wstzed = (value_grid[idx] - w_mu) / w_std
             state = np.array([t, float(wstzed)])
-            action = reinforce_algo.action_select_OOS(state, model)
+            action = reinforce_algo.action_select_OOS(state, Model)
             idx = sampleWidx(idx, value_grid, action, means_grid, stds_grid, probs_grid)
 
         if value_grid[idx] >= goal:
