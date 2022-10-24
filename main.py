@@ -16,7 +16,7 @@ from sampleWidx import sampleWidx
 from NeuralNet import NeuralNet
 import reinforce_algo
 from ANNTrainingGrid import no_batch_train_grid, train_one_batch_grid, train_model_grid
-from OOSTesting import OOS_grid
+from OOSTesting import OOS_grid, OOS
 
 portfolio_means = np.array([0.15, 0.10, 0.05])
 portfolio_stds = np.array([0.3, 0.15, 0.07])
@@ -57,14 +57,18 @@ n_OOS_paths = 1000
 
 ##################################
 
+######## Using grid ##############
 # training no batch
-no_batch_train(W0,G,T,h,train_nepochs,w_array,portfolio_means,portfolio_stds,probs_array,model,optimizer)
+no_batch_train_grid(W0,G,T,h,train_nepochs,w_array,portfolio_means,portfolio_stds,probs_array,model,optimizer)
 
 # training with batches
-train_model(nepochs, batch_size, model, optimizer, T, h, w_array, W0, G, probs_array, portfolio_means, portfolio_stds)
+train_model_grid(nepochs, batch_size, model, optimizer, T, h, w_array, W0, G, probs_array, portfolio_means, portfolio_stds)
 
 # Out-of-sample-testing
-OOS(W0, G, T, h, model, n_OOS_paths, w_array, portfolio_means, portfolio_stds, probs_array)
+OOS_grid(W0, G, T, h, model, n_OOS_paths, w_array, portfolio_means, portfolio_stds, probs_array)
+
+######## Without grid ##############
+
 
 
 

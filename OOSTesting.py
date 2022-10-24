@@ -43,3 +43,29 @@ def OOS_grid(initial_value, goal, time, increments, Model, nepochs, value_grid, 
 
         success_rate = n_success / neps
     print(success_rate)
+
+def OOS(initial_value, goal, time, increments, Model, nepochs, means_grid, stds_grid):
+    n_success = 0
+    neps = 0
+
+    t_normalize = np.linspace(0, time-1 , time*increments)
+    t_mu = t_normalize.mean()
+
+    for j in range(nepochs):
+        W, W_mean = initial_value
+
+        for i in range(time):
+            t = i - t_mu
+            wnmzed = W - W_mean
+            state = np.array([t, float(wnmzed)])
+            action = reinforce_algo.action_select_OOS(state, Model)
+            W_mean = W * np.exp(means_grid[action])
+            W = env.traj(W, action, means_grid, stds_grid, h)
+
+        if W >= goal:
+            n_success = n_success + 1
+
+        neps = neps + 1
+
+    return(n_success / neps)
+

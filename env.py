@@ -29,3 +29,9 @@ def transition_probs(means, standard_devs, wealth_grid, time_increments):
             probs_array[i, :, kk] = probs_array[i, :, kk] / sum_row
 
     return probs_array
+
+
+def traj(W, action, means_grid, stds_grid, h):
+    mean, std = means_grid[action], stds_grid[action]
+    Wprime = W*np.exp(mean - 0.5 * std**2 + std * np.random.normal(loc = 0, scale = h**0.5))
+    return Wprime
